@@ -1,11 +1,15 @@
 #! /bin/bash
 
-export PREFIX=./libx264
-export NDK=/home/hcm/work/android-ndk-r10e
-export SYSROOT=$NDK/platforms/android-8/arch-arm
-export TOOLCHAIN=$NDK/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64
+### MAC
 
-./configure --prefix=$PREFIX --enable-static --enable-pic --disable-asm --disable-cli \
+export PREFIX=./libx264
+export NDK=$ANDROID_NDK
+export SYSROOT=$NDK/platforms/android-8/arch-arm
+export TOOLCHAIN=$NDK/toolchains/arm-linux-androideabi-4.8/prebuilt/darwin-x86_64
+
+
+
+./configure --prefix=$PREFIX --enable-shared --enable-pic  --disable-cli \
 	--host=arm-linux --cross-prefix=$TOOLCHAIN/bin/arm-linux-androideabi- \
  	--sysroot=$SYSROOT
 
