@@ -9,7 +9,7 @@ export TOOLCHAIN=$NDK/toolchains/arm-linux-androideabi-4.8/prebuilt/darwin-x86_6
 
 
 
-./configure --prefix=$PREFIX --enable-shared --enable-pic  --disable-cli \
+./configure --prefix=$PREFIX --enable-static --enable-shared --enable-pic  --disable-cli \
 	--host=arm-linux --cross-prefix=$TOOLCHAIN/bin/arm-linux-androideabi- \
  	--sysroot=$SYSROOT
 
