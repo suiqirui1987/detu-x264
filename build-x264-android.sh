@@ -11,7 +11,8 @@ PREFIX=./detuout
 NDK=$ANDROID_NDK
 
 
-
+EXTRA_CFLAGS=""
+EXTRA_LDFLAGS=""
 PLATFORM=""
 TOOLCHAIN=""
 CROSS_PREFIX=""
@@ -20,7 +21,7 @@ HOST=""
 
 rm -r $PREFIX
 
-PLATFORMS="armv7a arm64 x86_64 x86"
+PLATFORMS="armv7a" # arm64"  #x86_64 x86"
 for platform in $PLATFORMS; 
 do
 	if [ $platform = "armv7a" ] ; then
@@ -28,21 +29,30 @@ do
         TOOLCHAIN=$NDK/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64
         CROSS_PREFIX=$TOOLCHAIN/bin/arm-linux-androideabi-
         HOST="arm-linux"
+        EXTRA_CFLAGS="-march=armv7-a -mfloat-abi=softfp -mfpu=neon -D__ARM_ARCH_7__ -D__ARM_ARCH_7A__"
+        EXTRA_LDFLAGS="-nostdlib"
     elif [ $platform = "arm64" ] ; then
-         PLATFORM=$NDK/platforms/android-21/arch-arm64/
+        PLATFORM=$NDK/platforms/android-21/arch-arm64/
         TOOLCHAIN=$NDK/toolchains/aarch64-linux-android-4.9/prebuilt/darwin-x86_64
         CROSS_PREFIX=$TOOLCHAIN/bin/aarch64-linux-android-
         HOST="aarch64-linux"
+        
+        EXTRA_CFLAGS=""
+        EXTRA_LDFLAGS="-nostdlib"
     elif [ $platform = "x86_64" ] ; then 
         PLATFORM=$NDK/platforms/android-21/arch-x86_64/
         TOOLCHAIN=$NDK/toolchains/x86_64-4.9/prebuilt/darwin-x86_64
         CROSS_PREFIX=$TOOLCHAIN/bin/x86_64-linux-android-
         HOST="x86_64-linux"
+        EXTRA_CFLAGS=""
+        EXTRA_LDFLAGS=""
      elif [ $platform = "x86" ] ; then 
         PLATFORM=$NDK/platforms/android-19/arch-x86/
         TOOLCHAIN=$NDK/toolchains/x86-4.9/prebuilt/darwin-x86_64
         CROSS_PREFIX=$TOOLCHAIN/bin/i686-linux-android-
         HOST="i686-linux"
+        EXTRA_CFLAGS=""
+        EXTRA_LDFLAGS=""
     fi
 
     echo "platform:$PLATFORM"
@@ -50,7 +60,6 @@ do
     echo "cross-prefix:$CROSS_PREFIX"
     echo "prefix:$PREFIX"
     echo "host:$HOST"
-
 
 
     PREFIX=./detuout/$platform
@@ -82,7 +91,8 @@ do
 
   
 
-    make -j4 install
+    make clean
+    make STRIP= -j4 install
 
 done
 

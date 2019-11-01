@@ -295,6 +295,7 @@ install-lib-dev:
 install-lib-static: lib-static install-lib-dev
 	$(INSTALL) -m 644 $(LIBX264) $(DESTDIR)$(libdir)
 	$(if $(RANLIB), $(RANLIB) $(DESTDIR)$(libdir)/$(LIBX264))
+	echo "RAND Lib SUccess"
 
 install-lib-shared: lib-shared install-lib-dev
 ifneq ($(IMPLIBNAME),)
