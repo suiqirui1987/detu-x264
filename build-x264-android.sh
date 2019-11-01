@@ -20,15 +20,15 @@ HOST=""
 
 rm -r $PREFIX
 
-PLATFORMS="armeabi-v7a arm64-v8a x86_64 x86"
+PLATFORMS="armv7a arm64 x86_64 x86"
 for platform in $PLATFORMS; 
 do
-	if [ $platform = "armeabi-v7a" ] ; then
+	if [ $platform = "armv7a" ] ; then
         PLATFORM=$NDK/platforms/android-19/arch-arm/
         TOOLCHAIN=$NDK/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64
         CROSS_PREFIX=$TOOLCHAIN/bin/arm-linux-androideabi-
         HOST="arm-linux"
-    elif [ $platform = "arm64-v8a" ] ; then
+    elif [ $platform = "arm64" ] ; then
          PLATFORM=$NDK/platforms/android-21/arch-arm64/
         TOOLCHAIN=$NDK/toolchains/aarch64-linux-android-4.9/prebuilt/darwin-x86_64
         CROSS_PREFIX=$TOOLCHAIN/bin/aarch64-linux-android-
