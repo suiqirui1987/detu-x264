@@ -1,44 +1,61 @@
 #! /bin/bash
 
-OS=`uname`
-HOST_ARCH=`uname -m`
-export CCACHE=; type ccache >/dev/null 2>&1 && export CCACHE=ccache
-if [ $OS == 'Linux' ]; then
-    export HOST_SYSTEM=linux-$HOST_ARCH
-elif [ $OS == 'Darwin' ]; then
-    export HOST_SYSTEM=darwin-$HOST_ARCH
+
+if [ -z "$ANDROID_NDK" -o -z "$ANDROID_NDK" ]; then
+    echo "You must define ANDROID_NDK, ANDROID_SDK before starting."
+    echo "They must point to your NDK and SDK directories.\n"
+    exit 1
 fi
 
-export PREFIX=./out
-export NDK=$ANDROID_NDK
-export SYSROOT=$NDK/platforms/android-14/arch-arm
-export TOOLCHAIN=$NDK/toolchains/arm-linux-androideabi-4.8/prebuilt/$HOST_SYSTEM/bin/arm-linux-androideabi-
-export HOST=arm-linux
-EXTRA_CFLAGS=""
-EXTRA_LDFLAGS=""
+PREFIX=./detuout
+NDK=$ANDROID_NDK
+
+
+
+PLATFORM=""
+TOOLCHAIN=""
+CROSS_PREFIX=""
+HOST=""
+
 
 rm -r $PREFIX
 
-PLATFORMS="armv5 armv7a x86"
+PLATFORMS="armeabi-v7a arm64-v8a x86_64 x86"
 for platform in $PLATFORMS; 
 do
-	if [ $platform = "armv5" ] ; then
-        EXTRA_CFLAGS=""
-        EXTRA_LDFLAGS=""
-    elif [ $platform = "armv7a" ] ; then
-        EXTRA_CFLAGS="-march=armv7-a -mfloat-abi=softfp -mfpu=neon -D__ARM_ARCH_7__ -D__ARM_ARCH_7A__"
-        EXTRA_LDFLAGS="-nostdlib"
-    elif [ $platform = "x86" ] ; then 
-        SYSROOT=$NDK/platforms/android-14/arch-x86
-        TOOLCHAIN=$NDK/toolchains/x86-4.8/prebuilt/$HOST_SYSTEM/bin/i686-linux-android-
-        HOST=x86-linux
-        EXTRA_CFLAGS=""
-        EXTRA_LDFLAGS=""
+	if [ $platform = "armeabi-v7a" ] ; then
+        PLATFORM=$NDK/platforms/android-19/arch-arm/
+        TOOLCHAIN=$NDK/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64
+        CROSS_PREFIX=$TOOLCHAIN/bin/arm-linux-androideabi-
+        HOST="arm-linux"
+    elif [ $platform = "arm64-v8a" ] ; then
+         PLATFORM=$NDK/platforms/android-21/arch-arm64/
+        TOOLCHAIN=$NDK/toolchains/aarch64-linux-android-4.9/prebuilt/darwin-x86_64
+        CROSS_PREFIX=$TOOLCHAIN/bin/aarch64-linux-android-
+        HOST="aarch64-linux"
+    elif [ $platform = "x86_64" ] ; then 
+        PLATFORM=$NDK/platforms/android-21/arch-x86_64/
+        TOOLCHAIN=$NDK/toolchains/x86_64-4.9/prebuilt/darwin-x86_64
+        CROSS_PREFIX=$TOOLCHAIN/bin/x86_64-linux-android-
+        HOST="x86_64-linux"
+     elif [ $platform = "x86" ] ; then 
+        PLATFORM=$NDK/platforms/android-19/arch-x86/
+        TOOLCHAIN=$NDK/toolchains/x86-4.9/prebuilt/darwin-x86_64
+        CROSS_PREFIX=$TOOLCHAIN/bin/i686-linux-android-
+        HOST="i686-linux"
     fi
-    echo "platform:$platform,EXTRA_CFLAGS:$EXTRA_CFLAGS"
+
+    echo "platform:$PLATFORM"
+    echo "toolchains:$TOOLCHAIN"
+    echo "cross-prefix:$CROSS_PREFIX"
+    echo "prefix:$PREFIX"
+    echo "host:$HOST"
+
+
+
     PREFIX=./detuout/$platform
     ./configure  --prefix=$PREFIX \
-    --cross-prefix=$TOOLCHAIN \
+    --cross-prefix=$CROSS_PREFIX \
     --extra-cflags="$EXTRA_CFLAGS" \
     --extra-ldflags="$EXTRA_LDFLAGS" \
     --enable-pic \
@@ -48,12 +65,26 @@ do
     --enable-strip \
     --disable-cli \
     --host=$HOST \
-    --sysroot=$SYSROOT
+    --sysroot=$PLATFORM
 
-    make clean
-    make STRIP= -j4 install
+    echo " ./configure  --prefix=$PREFIX \
+    --cross-prefix=$CROSS_PREFIX \
+    --extra-cflags="$EXTRA_CFLAGS" \
+    --extra-ldflags="$EXTRA_LDFLAGS" \
+    --enable-pic \
+    --enable-static \
+    --enable-shared \
+    --disable-asm \
+    --enable-strip \
+    --disable-cli \
+    --host=$HOST \
+    --sysroot=$PLATFORM"
+
+  
+
+    make -j4 install
 
 done
 
-
+echo Android builds finished
 

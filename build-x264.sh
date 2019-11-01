@@ -4,7 +4,7 @@
 
 export PREFIX=./libx264
 export NDK=$ANDROID_NDK
-export SYSROOT=$NDK/platforms/android-8/arch-arm
+export SYSROOT=$NDK/platforms/android-21/arch-arm
 export TOOLCHAIN=$NDK/toolchains/arm-linux-androideabi-4.8/prebuilt/darwin-x86_64
 
 

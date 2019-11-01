@@ -1,1 +1,11 @@
-hcm add x264 compile for android
+## x264 (suiqirui1987)
+
+
+## ios (armv7 arm64)
+
+sh build-x264-ios.sh
+
+
+## Android 编译 (armv5 armv7a x86)
+
+sh build-x264-android.sh
