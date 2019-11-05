@@ -21,7 +21,7 @@ HOST=""
 
 rm -r $PREFIX
 
-PLATFORMS="armv7a" # arm64"  #x86_64 x86"
+PLATFORMS="armv7a arm64 x86_64 x86"
 for platform in $PLATFORMS; 
 do
 	if [ $platform = "armv7a" ] ; then
